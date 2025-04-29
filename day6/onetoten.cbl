@@ -1,0 +1,15 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. onetoten.
+       AUTHOR. Leocrabe225.
+       DATE-WRITTEN. 29-04-2025 (fr).
+       DATE-COMPILED. null.
+       ENVIRONMENT DIVISION.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 ITERATOR             PIC 9(3).
+       PROCEDURE DIVISION.
+           PERFORM VARYING ITERATOR FROM 1 BY 1 UNTIL ITERATOR > 10
+               DISPLAY ITERATOR
+           END-PERFORM.
+           STOP RUN.
+           
