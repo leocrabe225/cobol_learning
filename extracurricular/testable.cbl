@@ -34,7 +34,7 @@
       * You can then indeed assigne a value to a table(index).
 
       * What happens if I change the size back to something smaller than
-      * the further it stored something?
+      * the furthest it stored something?
       * Can I continue assigning values afterwards?
            DISPLAY "Step 3".
            MOVE 1 TO TABLE-SIZE.
