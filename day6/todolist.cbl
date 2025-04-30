@@ -6,10 +6,10 @@
        ENVIRONMENT DIVISION.
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01 STRING_ADD           PIC X(3) VALUE "ADD".
-       01 STRING_DISPLAY       PIC X(7) VALUE "DISPLAY".
-       01 STRING_REMOVE        PIC X(6) VALUE "REMOVE".
-       01 STRING_QUIT          PIC X(4) VALUE "QUIT".
+       01 STRING-ADD           PIC X(3) VALUE "ADD".
+       01 STRING-DISPLAY       PIC X(7) VALUE "DISPLAY".
+       01 STRING-REMOVE        PIC X(6) VALUE "REMOVE".
+       01 STRING-QUIT          PIC X(4) VALUE "QUIT".
        01 INPUT1               PIC X(50) VALUE ZEROS.
        01 INPUT-INDEX          PIC 9(1).
        01 NEW-VALUE            PIC X(50).
@@ -20,11 +20,11 @@
        01 TASK3                PIC X(50).
        01 TASK4                PIC X(50).
        PROCEDURE DIVISION.
-           PERFORM UNTIL INPUT1 EQUAL STRING_QUIT
+           PERFORM UNTIL INPUT1 EQUAL STRING-QUIT
                DISPLAY "Type ADD / DISPLAY / REMOVE / QUIT."
                ACCEPT INPUT1
                EVALUATE TRUE
-                   WHEN INPUT1 EQUAL STRING_ADD
+                   WHEN INPUT1 EQUAL STRING-ADD
                        PERFORM 0100-DISPLAY-TASKS-START
                           THRU 0100-DISPLAY-TASKS-END
                        DISPLAY "Type a task number to add to this slot."
@@ -35,11 +35,11 @@
                        PERFORM 0300-SET-VALUE-START
                           THRU 0300-SET-VALUE-END
 
-                   WHEN INPUT1 EQUAL STRING_DISPLAY
+                   WHEN INPUT1 EQUAL STRING-DISPLAY
                        PERFORM 0100-DISPLAY-TASKS-START
                           THRU 0100-DISPLAY-TASKS-END
 
-                   WHEN INPUT1 EQUAL STRING_REMOVE
+                   WHEN INPUT1 EQUAL STRING-REMOVE
                        PERFORM 0100-DISPLAY-TASKS-START
                           THRU 0100-DISPLAY-TASKS-END
                        DISPLAY "Type a task number to remove it."
