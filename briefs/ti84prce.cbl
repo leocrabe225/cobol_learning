@@ -131,24 +131,31 @@
            SET ERROR-FOUND TO TRUE.
            MOVE FUNCTION TRIM(INPUT1) TO INPUT1.
            MOVE 1 TO ITERATOR.
-           IF (INPUT1(ITERATOR:1) EQUAL "+" OR 
-               INPUT1(ITERATOR:1) EQUAL "-")
-               MOVE 2 TO ITERATOR
-           END-IF.
-           PERFORM UNTIL (NOT
-              (INPUT1(ITERATOR:1) >= "0" AND INPUT1(ITERATOR:1) <= "9"))
-              OR ITERATOR > LENGTH OF INPUT1
-               ADD 1 TO ITERATOR
-               SET NO-ERROR-FOUND TO TRUE 
-           END-PERFORM.
-           SUBTRACT 1 FROM ITERATOR.
-           
-           IF NO-ERROR-FOUND THEN
-               MOVE INPUT1(1:ITERATOR) TO NUMBER-BUFFER
-               MOVE ITERATOR TO TEMP1
-               ADD 1 TO TEMP1
-               MOVE INPUT1(TEMP1:(LENGTH OF INPUT1) - ITERATOR) TO
-                    INPUT1
+           IF (INPUT1(1:2) EQUAL "T ") THEN
+               MOVE TOTAL TO NUMBER-BUFFER
+               SET NO-ERROR-FOUND TO TRUE
+               MOVE INPUT1(2:(LENGTH OF INPUT1) - 2) TO INPUT1
+           ELSE
+               IF (INPUT1(ITERATOR:1) EQUAL "+" OR 
+                   INPUT1(ITERATOR:1) EQUAL "-")
+                   MOVE 2 TO ITERATOR
+               END-IF
+               PERFORM UNTIL (NOT
+                  (INPUT1(ITERATOR:1) >= "0"   AND 
+                   INPUT1(ITERATOR:1) <= "9")) OR
+                   ITERATOR > LENGTH OF INPUT1
+                   ADD 1 TO ITERATOR
+                   SET NO-ERROR-FOUND TO TRUE 
+               END-PERFORM
+               SUBTRACT 1 FROM ITERATOR
+               
+               IF NO-ERROR-FOUND THEN
+                   MOVE INPUT1(1:ITERATOR) TO NUMBER-BUFFER
+                   MOVE ITERATOR TO TEMP1
+                   ADD 1 TO TEMP1
+                   MOVE INPUT1(TEMP1:(LENGTH OF INPUT1) - ITERATOR) TO
+                        INPUT1
+               END-IF
            END-IF.
        0200-GET-NUMBER-END.
 
