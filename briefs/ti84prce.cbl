@@ -12,6 +12,7 @@
        01 STRING-MINUS         PIC X(1) VALUE "-".
        01 STRING-DIVIDE        PIC X(1) VALUE "/".
        01 STRING-MULTIPLY      PIC X(1) VALUE "*".
+       01 STRING-POWER         PIC X(1) VALUE "^".
 
        01 TEMP1                PIC 9(2).
        01 INPUT-SIZE-MINUS-2   PIC 9(2).
@@ -28,13 +29,20 @@
            88 CALCULATION-IN-PROGRESS VALUE SPACE.
            88 CALCULATION-ERROR       VALUE 'E'.
            88 CALCULATION-SUCCESS     VALUE 'S'.
+
+       01 OUTPUT-NUMBER-BUFFER-SIGNED PIC S9(10).
+       01 OUTPUT-NUMBER-BUFFER-ALPHAN PIC Z(9)9.
        PROCEDURE DIVISION.
       * Setting up INPUT-SIZE-MINUS-2 variable.
            MOVE LENGTH OF INPUT1 TO INPUT-SIZE-MINUS-2.
            SUBTRACT 2 FROM INPUT-SIZE-MINUS-2.
 
            PERFORM UNTIL 1 EQUAL 0
-             DISPLAY "TOTAL : " TOTAL
+             MOVE TOTAL TO OUTPUT-NUMBER-BUFFER-SIGNED
+             DISPLAY "TOTAL : " WITH NO ADVANCING
+             PERFORM 0300-DISPLAY-SHORT-NUMBER-START
+                THRU 0300-DISPLAY-SHORT-NUMBER-END
+             DISPLAY SPACE
              ACCEPT INPUT1
              EVALUATE INPUT1
                WHEN STRING-CLEAR
@@ -60,6 +68,14 @@
                      PERFORM 0200-GET-NUMBER-START
                         THRU 0200-GET-NUMBER-END
                      IF NO-ERROR-FOUND THEN
+                       MOVE MATH-BUFFER TO OUTPUT-NUMBER-BUFFER-SIGNED
+                       PERFORM 0300-DISPLAY-SHORT-NUMBER-START
+                          THRU 0300-DISPLAY-SHORT-NUMBER-END
+                       DISPLAY SPACE OPERATION SPACE WITH NO ADVANCING
+                       MOVE NUMBER-BUFFER TO OUTPUT-NUMBER-BUFFER-SIGNED
+                       PERFORM 0300-DISPLAY-SHORT-NUMBER-START
+                          THRU 0300-DISPLAY-SHORT-NUMBER-END
+                       DISPLAY " = " WITH NO ADVANCING
                        EVALUATE OPERATION
                          WHEN STRING-PLUS
                            ADD NUMBER-BUFFER TO MATH-BUFFER
@@ -69,7 +85,13 @@
                            DIVIDE NUMBER-BUFFER INTO MATH-BUFFER
                          WHEN STRING-MULTIPLY
                            MULTIPLY NUMBER-BUFFER BY MATH-BUFFER
+                         WHEN STRING-POWER
+                  COMPUTE MATH-BUFFER EQUAL MATH-BUFFER ** NUMBER-BUFFER
                        END-EVALUATE
+                       MOVE MATH-BUFFER TO OUTPUT-NUMBER-BUFFER-SIGNED
+                       PERFORM 0300-DISPLAY-SHORT-NUMBER-START
+                          THRU 0300-DISPLAY-SHORT-NUMBER-END
+                       DISPLAY SPACE
                        IF INPUT1 EQUAL SPACES
                          SET CALCULATION-SUCCESS TO TRUE
                        END-IF
@@ -96,7 +118,8 @@
            IF (NOT (OPERATION EQUAL STRING-PLUS
                 OR OPERATION EQUAL STRING-MINUS
                 OR OPERATION EQUAL STRING-DIVIDE
-                OR OPERATION EQUAL STRING-MULTIPLY))
+                OR OPERATION EQUAL STRING-MULTIPLY
+                OR OPERATION EQUAL STRING-POWER))
                 OR (INPUT1(2:1) NOT EQUAL SPACE)  THEN
                SET ERROR-FOUND TO TRUE
            ELSE
@@ -128,3 +151,19 @@
                     INPUT1
            END-IF.
        0200-GET-NUMBER-END.
+
+       0300-DISPLAY-SHORT-NUMBER-START.
+           MOVE OUTPUT-NUMBER-BUFFER-SIGNED TO
+                OUTPUT-NUMBER-BUFFER-ALPHAN
+           PERFORM VARYING ITERATOR FROM 1 BY 1 UNTIL
+               OUTPUT-NUMBER-BUFFER-ALPHAN(ITERATOR:1) NOT EQUAL SPACE
+               CONTINUE
+           END-PERFORM.
+           IF OUTPUT-NUMBER-BUFFER-SIGNED < 0 THEN
+           DISPLAY "-" WITH NO ADVANCING
+           END-IF.
+           DISPLAY OUTPUT-NUMBER-BUFFER-ALPHAN(ITERATOR:
+             (LENGTH OF OUTPUT-NUMBER-BUFFER-ALPHAN) - ITERATOR + 1)
+             WITH NO ADVANCING.
+       0300-DISPLAY-SHORT-NUMBER-END.
+       
