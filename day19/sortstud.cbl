@@ -9,7 +9,7 @@
        FILE-CONTROL.
 
            SELECT STUDENTS-OUTPUT
-               ASSIGN TO "students.txt"
+               ASSIGN TO "output/students.txt"
                ORGANIZATION IS LINE SEQUENTIAL.
 
            SELECT SORT-STUDENTS-OUTPUT
@@ -18,10 +18,10 @@
        DATA DIVISION.
        FILE SECTION.
        FD STUDENTS-OUTPUT.
-       COPY "stud.cpy" REPLACING ==:TAG:== BY ==F==.
+       COPY "copybooks/stud.cpy" REPLACING ==:TAG:== BY ==F==.
                
        SD SORT-STUDENTS-OUTPUT.
-       COPY "stud.cpy" REPLACING ==:TAG:== BY ==SORT==.
+       COPY "copybooks/stud.cpy" REPLACING ==:TAG:== BY ==SORT==.
             
        WORKING-STORAGE SECTION.
        01 WS-TBL-STUDENTS.
