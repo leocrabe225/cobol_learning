@@ -22,6 +22,9 @@
        01 WS-INPUT-2              PIC X(50).
 
        01 WS-IDX                  PIC 9(02).
+       01 WS-IS-NUM-BOOL          PIC 9(01).
+           88 WS-IS-NUM-TRUE                VALUE 1.
+           88 WS-IS-NUM-FALSE               VALUE 0.
        
        01 WS-STRING-CREATE        PIC X(10) VALUE "CREATE".
        01 WS-STRING-READ          PIC X(10) VALUE "READ".
@@ -50,7 +53,6 @@
        EXEC SQL INCLUDE SQLCA END-EXEC.
        
        PROCEDURE DIVISION.
-           
            DISPLAY "Connecting to PostgreSQL...".
            
            EXEC SQL
@@ -88,21 +90,21 @@
            
            
 
-           MOVE "MAMA" TO PEOPLE-NAME.
-           MOVE "MASSAR" TO PEOPLE-FNAME.
-           MOVE "0777777777" TO PEOPLE-PHONE-NUMBER.
-           EXEC SQL 
-               INSERT INTO individus (nom, prenom, telephone)
-               VALUES 
-                   (:PEOPLE-NAME, :PEOPLE-FNAME, :PEOPLE-PHONE-NUMBER);
-           END-EXEC.
+      *    MOVE "MAMA" TO PEOPLE-NAME.
+      *    MOVE "MASSAR" TO PEOPLE-FNAME.
+      *    MOVE "0777777777" TO PEOPLE-PHONE-NUMBER.
+      *    EXEC SQL 
+      *        INSERT INTO individus (nom, prenom, telephone)
+      *        VALUES 
+      *            (:PEOPLE-NAME, :PEOPLE-FNAME, :PEOPLE-PHONE-NUMBER);
+      *    END-EXEC.
+      *
+      *    IF SQLCODE NOT = 0
+      *        DISPLAY "Connection error SQLCODE: " SQLCODE
+      *        STOP RUN
+      *    END-IF.
        
-           IF SQLCODE NOT = 0
-               DISPLAY "Connection error SQLCODE: " SQLCODE
-               STOP RUN
-           END-IF.
-       
-           EXEC SQL COMMIT WORK END-EXEC.
+      *    EXEC SQL COMMIT WORK END-EXEC.
 
            EXEC SQL
                DISCONNECT ALL
@@ -122,15 +124,20 @@
            DISPLAY
                "Enter either an ID or a name to select from the table".
            ACCEPT WS-INPUT-2.
+           CALL "isonlynb" USING 
+               BY REFERENCE WS-INPUT-2
+               BY REFERENCE WS-IS-NUM-BOOL
+           END-CALL.
            
-           IF WS-INPUT-2 IS NUMERIC THEN
+           IF WS-IS-NUM-TRUE
                DISPLAY "Numeric"
+               MOVE FUNCTION NUMVAL(WS-INPUT-2) TO PEOPLE-ID
        EXEC SQL
                SELECT nom, prenom, telephone
                INTO :PEOPLE-NAME, :PEOPLE-FNAME,
                     :PEOPLE-PHONE-NUMBER
                FROM individus
-               WHERE nom LIKE :WS-INPUT-2;
+               WHERE id = :PEOPLE-ID;
        END-EXEC
            ELSE
                DISPLAY "Alpha"
