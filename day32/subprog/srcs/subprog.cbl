@@ -5,8 +5,17 @@
 
        DATA DIVISION.
 
-       PROCEDURE DIVISION.
+       LINKAGE SECTION.
+       01 LK-NOM       PIC X(20).
+       01 LK-RESULT    PIC X(30).
 
-           DISPLAY "This is a subprog".
+       PROCEDURE DIVISION USING
+                                LK-NOM,
+                                LK-RESULT.
 
-           STOP RUN.
+           STRING "Bonjour, " LK-NOM
+               DELIMITED BY SIZE
+               INTO LK-RESULT
+           END-STRING.
+
+           EXIT PROGRAM.
