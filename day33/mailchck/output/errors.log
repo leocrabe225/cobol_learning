@@ -1,0 +1,4 @@
+[Line 01] Error, invalid ID : "000 000001"
+[Line 03] Error, invalid email, no "@" found : "janesmithexample.com"
+[Line 04] Error, invalid email, too many "@" found : "alice@mar@tin.org"
+[Line 05] Error, invalid email, no "." found : "johnny@philippinesorg"
